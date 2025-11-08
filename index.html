@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's Inside - Yiyeceklerin İçindekini Bil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 26px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .features {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .how-it-works {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .step p {
+            color: #4a5568;
+        }
+
+        .cta {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .tagline {
+                font-size: 1.1em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .steps {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="app-icon">🔍</div>
+            <h1>What's Inside</h1>
+            <p class="tagline">Yiyeceklerin içindekini anında öğren, sağlıklı seçimler yap</p>
+            <a href="#" class="download-btn">App Store'dan İndir</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Özellikler</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Hızlı Tarama</h3>
+                    <p>Ürünün içindekiler listesinin fotoğrafını çek, uygulama otomatik olarak tüm içerikleri tanısın ve analiz etsin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Zararlı İçerik Tespiti</h3>
+                    <p>E-kodları, katkı maddeleri ve potansiyel zararlı içerikleri anında tespit et. Hangi maddelerin sağlığa zararlı olduğunu öğren.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏥</div>
+                    <h3>Alerjen Kontrolü</h3>
+                    <p>Alerjiniz olan maddeleri takip edin. Uygulama size uygun olmayan ürünleri anında bildirsin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Detaylı Analiz</h3>
+                    <p>Her içeriğin ne olduğunu, neden kullanıldığını ve sağlık üzerindeki etkilerini detaylı şekilde öğrenin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🇹🇷</div>
+                    <h3>Türkçe Destek</h3>
+                    <p>Tamamen Türkçe arayüz ve Türk gıda mevzuatına uygun veritabanı ile yerel ürünleri kolayca analiz edin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Offline Kullanım</h3>
+                    <p>Kapsamlı veritabanı sayesinde internet bağlantısı olmadan da ürünleri analiz edebilirsiniz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Nasıl Çalışır?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Fotoğrafı Çek</h3>
+                    <p>Ürünün içindekiler listesinin fotoğrafını çekin</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Analiz Et</h3>
+                    <p>Uygulama içerikleri otomatik olarak tanıyıp analiz eder</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Sonuçları Gör</h3>
+                    <p>Zararlı maddeleri ve detaylı açıklamaları görüntüleyin</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Sağlıklı Yaşamaya Bugün Başla</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">What's Inside ile ne yediğinizi bilin, bilinçli seçimler yapın</p>
+            <a href="#" class="download-btn">App Store'dan İndir</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 What's Inside. Tüm hakları saklıdır.</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/yourusername/whats-inside">GitHub</a> | 
+                <a href="mailto:support@example.com">İletişim</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
