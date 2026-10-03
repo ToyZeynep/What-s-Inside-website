@@ -3,334 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What's Inside - Yiyeceklerin İçindekini Bil</title>
+    <title>What's Inside? — Gıda Katkı Maddesi Tarayıcı</title>
+    <meta name="description" content="Etiketi ya da barkodu okutun; katkı maddelerini, alerjenleri ve E-kodlarını saniyeler içinde görün. Sağlık profilinize göre A–E not.">
+    <meta property="og:title" content="What's Inside?">
+    <meta property="og:description" content="Katkı maddeleri, alerjenler ve E-kodları tek bakışta.">
+    <meta property="og:image" content="/assets/app-icon.png">
+    <link rel="icon" href="/assets/app-icon.png">
+    <link rel="apple-touch-icon" href="/assets/app-icon.png">
+    <meta name="apple-itunes-app" content="app-id=6753644152">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --canvas: #F7F4EE;
+            --card: #FFFFFF;
+            --muted-card: #F2EFE8;
+            --border: #E7E2D8;
+            --ink: #1E293B;
+            --muted: #545F73;
+            --teal: #0D9488;
+            --teal-deep: #0F766E;
+            --teal-tint: #E6F7F5;
+            --red: #DC2626; --red-tint: #FEF2F2;
+            --amber: #D97706; --amber-tint: #FFFBEB;
+            --violet: #7C3AED; --violet-tint: #F5F3FF;
+            --green: #059669; --green-tint: #ECFDF5;
         }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--canvas);
+            color: var(--ink);
             line-height: 1.6;
-            color: #333;
             overflow-x: hidden;
         }
+        h1, h2, h3, .brand { font-family: 'Manrope', -apple-system, sans-serif; letter-spacing: -0.02em; }
+        a { color: inherit; }
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 100px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+        /* Dil: sayfa iki dili de içerir, seçili olan gösterilir */
+        [data-lang="en"] .tr, [data-lang="tr"] .en { display: none !important; }
+
+        /* Üst çubuk */
+        .nav { position: sticky; top: 0; z-index: 10; background: rgba(247,244,238,.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+        .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1em; text-decoration: none; }
+        .brand img { width: 34px; height: 34px; border-radius: 9px; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-right > a { text-decoration: none; color: var(--muted); font-weight: 500; }
+        .lang { display: flex; background: var(--muted-card); border-radius: 999px; padding: 3px; }
+        .lang button { border: 0; background: transparent; padding: 5px 12px; border-radius: 999px; font: inherit; font-weight: 600; color: var(--muted); cursor: pointer; }
+        .lang button.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+        /* Giriş */
+        .hero { position: relative; padding: 72px 0 40px; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; width: 720px; height: 720px; left: -260px; top: -320px; background: radial-gradient(closest-side, rgba(13,148,136,.22), transparent); }
+        .hero::after { content: ''; position: absolute; width: 640px; height: 640px; right: -240px; bottom: -280px; background: radial-gradient(closest-side, rgba(13,148,136,.14), transparent); }
+        .hero .wrap > *, .grid > *, .steps > *, .shots > * { min-width: 0; }
+        .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-tint); color: var(--teal-deep); font-weight: 600; font-size: .9em; padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; }
+        .hero h1 { font-size: clamp(2.3em, 5vw, 3.6em); line-height: 1.08; font-weight: 800; margin-bottom: 18px; }
+        .hero h1 em { font-style: normal; color: var(--teal); }
+        .hero p.lead { font-size: 1.2em; color: var(--muted); max-width: 520px; margin-bottom: 30px; }
+        .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+        .store-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; text-decoration: none; padding: 12px 22px; border-radius: 14px; font-weight: 600; transition: transform .15s; }
+        .store-btn:hover { transform: translateY(-2px); }
+        .store-btn svg { width: 22px; height: 22px; fill: #fff; }
+        .store-btn small { display: block; font-size: .72em; font-weight: 500; opacity: .8; line-height: 1.1; }
+        .store-btn span { line-height: 1.15; font-size: 1.05em; }
+        .note { color: var(--muted); font-size: .92em; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+        .tag { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .85em; letter-spacing: .04em; padding: 5px 10px; border-radius: 8px; }
+        .t-red { color: #991B1B; background: var(--red-tint); }
+        .t-violet { color: #5B21B6; background: var(--violet-tint); }
+        .t-amber { color: #92400E; background: var(--amber-tint); }
+        .t-green { color: #065F46; background: var(--green-tint); }
+        .hero-shot { justify-self: center; width: min(420px, 100%); filter: drop-shadow(0 30px 50px rgba(30,41,59,.18)); }
+        .hero-shot img { width: 100%; height: auto; border-radius: 28px; display: block; }
+
+        /* Bölümler */
+        section { padding: 72px 0; }
+        .section-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
+        .section-head h2 { font-size: clamp(1.8em, 3.4vw, 2.5em); line-height: 1.15; margin-bottom: 10px; }
+        .section-head p { color: var(--muted); font-size: 1.08em; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 26px; }
+        .icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--teal-tint); color: var(--teal); margin-bottom: 16px; }
+        .icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .card h3 { font-size: 1.15em; margin-bottom: 6px; }
+        .card p { color: var(--muted); }
+
+        /* Ekran görüntüleri */
+        .shots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+        .shots img { width: 100%; height: auto; border-radius: 22px; border: 1px solid var(--border); display: block; }
+
+        /* Adımlar */
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: step; }
+        .step { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 26px; }
+        .step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--teal); color: #fff; font-family: 'Manrope', sans-serif; font-weight: 700; margin-bottom: 14px; }
+        .step h3 { font-size: 1.1em; margin-bottom: 6px; }
+        .step p { color: var(--muted); }
+
+        /* Karar örneği */
+        .verdicts { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+        .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 8px 8px 16px; border-radius: 999px; font-weight: 600; }
+        .pill b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #fff; font-family: 'Manrope', sans-serif; }
+        .p-good { background: var(--green-tint); color: #065F46; } .p-good b { background: var(--green); }
+        .p-caution { background: var(--amber-tint); color: #92400E; } .p-caution b { background: var(--amber); }
+        .p-avoid { background: var(--red-tint); color: #991B1B; } .p-avoid b { background: var(--red); }
+
+        /* Gizlilik */
+        .privacy { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 40px; display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; }
+        .privacy .icon { width: 72px; height: 72px; border-radius: 20px; margin: 0; }
+        .privacy .icon svg { width: 34px; height: 34px; }
+        .privacy h2 { font-size: 1.6em; margin-bottom: 6px; }
+        .privacy p { color: var(--muted); }
+        .privacy a { color: var(--teal); font-weight: 600; }
+
+        /* Son çağrı */
+        .final { text-align: center; }
+        .final img { width: 88px; height: 88px; border-radius: 22px; margin-bottom: 18px; }
+        .final h2 { font-size: clamp(1.8em, 3.4vw, 2.6em); margin-bottom: 10px; }
+        .final p { color: var(--muted); margin-bottom: 24px; }
+
+        footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: .92em; }
+        footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+        footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
+        footer a { text-decoration: none; }
+        footer a:hover { color: var(--teal); }
+        .disclaimer { width: 100%; font-size: .88em; }
+
+        @media (max-width: 900px) {
+            .hero .wrap { grid-template-columns: 1fr; }
+            .hero-shot { width: min(360px, 90%); }
+            .grid, .steps { grid-template-columns: 1fr 1fr; }
+            .shots { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveBackground 20s linear infinite;
-        }
-
-        @keyframes moveBackground {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .app-icon {
-            width: 120px;
-            height: 120px;
-            background: white;
-            border-radius: 26px;
-            margin: 0 auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .tagline {
-            font-size: 1.4em;
-            margin-bottom: 40px;
-            opacity: 0.95;
-        }
-
-        .download-btn {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 18px 50px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1em;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .features {
-            padding: 80px 20px;
-            background: #f8f9fa;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 60px;
-            color: #2d3748;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-        }
-
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .feature-card p {
-            color: #4a5568;
-            line-height: 1.8;
-        }
-
-        .how-it-works {
-            padding: 80px 20px;
-            background: white;
-        }
-
-        .steps {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        .step {
-            flex: 1;
-            min-width: 250px;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin: 0 auto 20px;
-        }
-
-        .step h3 {
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .step p {
-            color: #4a5568;
-        }
-
-        .cta {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-        }
-
-        .cta h2 {
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
-
-        .footer {
-            background: #2d3748;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .tagline {
-                font-size: 1.1em;
-            }
-
-            .section-title {
-                font-size: 2em;
-            }
-
-            .steps {
-                flex-direction: column;
-            }
+        @media (max-width: 600px) {
+            .nav-right > a { display: none; }
+            .hero { padding-top: 40px; }
+            .grid, .steps { grid-template-columns: 1fr; }
+            .privacy { grid-template-columns: 1fr; padding: 28px; }
+            section { padding: 52px 0; }
         }
     </style>
 </head>
-<body>
+<body data-lang="tr">
+
+<header class="nav">
+    <div class="wrap">
+        <a class="brand" href="/"><img src="/assets/app-icon.png" alt="">What's Inside?</a>
+        <div class="nav-right">
+            <a href="#features"><span class="tr">Özellikler</span><span class="en">Features</span></a>
+            <a href="/privacy"><span class="tr">Gizlilik</span><span class="en">Privacy</span></a>
+            <div class="lang" role="group" aria-label="Language">
+                <button data-set="tr">TR</button>
+                <button data-set="en">EN</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Giriş -->
     <section class="hero">
-        <div class="hero-content">
-            <div class="app-icon">🔍</div>
-            <h1>What's Inside</h1>
-            <p class="tagline">Yiyeceklerin içindekini anında öğren, sağlıklı seçimler yap</p>
-            <a href="#" class="download-btn">App Store'dan İndir</a>
+        <div class="wrap">
+            <div>
+                <span class="eyebrow"><span class="tr">445 katkı maddesi · 21 dil</span><span class="en">445 additives · 21 languages</span></span>
+                <h1>
+                    <span class="tr">Etiketin arkasını <em>saniyeler içinde</em> gör.</span>
+                    <span class="en">Know what's inside, <em>in seconds.</em></span>
+                </h1>
+                <p class="lead">
+                    <span class="tr">İçindekiler listesini ya da barkodu okut; katkı maddelerini, alerjenleri ve E-kodlarını anında gör. Sağlık profiline göre A–E arası net bir karar al.</span>
+                    <span class="en">Scan the ingredients list or barcode and instantly see additives, allergens and E-numbers. Get a clear A–E verdict based on your health profile.</span>
+                </p>
+                <div class="cta-row">
+                    <a class="store-btn" href="https://apps.apple.com/app/id6753644152">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.77-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.37-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.09 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg>
+                        <span><small class="tr">App Store'dan</small><small class="en">Download on the</small><span class="tr">İndir</span><span class="en">App Store</span></span>
+                    </a>
+                    <span class="note"><span class="tr">Ücretsiz · iPhone</span><span class="en">Free · iPhone</span></span>
+                </div>
+                <div class="tags">
+                    <span class="tag t-red">E120</span><span class="tag t-violet">E951</span><span class="tag t-amber">E250</span><span class="tag t-green">E330</span>
+                </div>
+            </div>
+            <div class="hero-shot">
+                <img class="tr" src="/assets/tr-02.jpg" alt="What's Inside? analiz sonucu">
+                <img class="en" src="/assets/en-02.jpg" alt="What's Inside? analysis result">
+            </div>
         </div>
     </section>
 
-    <section class="features">
-        <div class="container">
-            <h2 class="section-title">Özellikler</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📸</div>
-                    <h3>Hızlı Tarama</h3>
-                    <p>Ürünün içindekiler listesinin fotoğrafını çek, uygulama otomatik olarak tüm içerikleri tanısın ve analiz etsin.</p>
+    <!-- Özellikler -->
+    <section id="features">
+        <div class="wrap">
+            <div class="section-head">
+                <h2><span class="tr">Market rafında ihtiyacın olan her şey</span><span class="en">Everything you need at the shelf</span></h2>
+                <p><span class="tr">Karmaşık etiketleri anlaşılır bilgiye çevirir, sana uyup uymadığını söyler.</span><span class="en">Turns confusing labels into clear answers and tells you whether a product suits you.</span></p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M13 8v8M17 8v8"/></svg></div>
+                    <h3><span class="tr">Etiket ve barkod tarama</span><span class="en">Label &amp; barcode scanning</span></h3>
+                    <p><span class="tr">İçindekiler listesini kamerayla okut ya da barkodu tara. Metni yapıştırarak da analiz edebilirsin.</span><span class="en">Read the ingredients list with your camera or scan the barcode. You can also paste the text.</span></p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚠️</div>
-                    <h3>Zararlı İçerik Tespiti</h3>
-                    <p>E-kodları, katkı maddeleri ve potansiyel zararlı içerikleri anında tespit et. Hangi maddelerin sağlığa zararlı olduğunu öğren.</p>
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+                    <h3><span class="tr">A–E not ve net karar</span><span class="en">A–E grade &amp; clear verdict</span></h3>
+                    <p><span class="tr">Her ürün için "Size uygun", "Dikkat" ya da "Kaçının" kararı ve kısa bir gerekçe.</span><span class="en">A "Good for you", "Caution" or "Avoid" verdict with a short reason for every product.</span></p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🏥</div>
-                    <h3>Alerjen Kontrolü</h3>
-                    <p>Alerjiniz olan maddeleri takip edin. Uygulama size uygun olmayan ürünleri anında bildirsin.</p>
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <h3><span class="tr">Sana özel profil</span><span class="en">Your personal profile</span></h3>
+                    <p><span class="tr">Vegan, vejetaryen, hamilelik, çocuklar, astım/ürtiker ve fenilketonüri (PKU) için kişisel uyarılar.</span><span class="en">Personal alerts for vegan, vegetarian, pregnancy, kids, asthma/urticaria and phenylketonuria (PKU).</span></p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Detaylı Analiz</h3>
-                    <p>Her içeriğin ne olduğunu, neden kullanıldığını ve sağlık üzerindeki etkilerini detaylı şekilde öğrenin.</p>
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-2a2 2 0 0 0-4 0"/></svg></div>
+                    <h3><span class="tr">Kaçınma listesi</span><span class="en">Avoid list</span></h3>
+                    <p><span class="tr">Asla görmek istemediğin maddeleri ekle; taramada çıktığı an uyarı al.</span><span class="en">Add items you never want to see and get alerted the moment they show up.</span></p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🇹🇷</div>
-                    <h3>Türkçe Destek</h3>
-                    <p>Tamamen Türkçe arayüz ve Türk gıda mevzuatına uygun veritabanı ile yerel ürünleri kolayca analiz edin.</p>
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+                    <h3><span class="tr">Ülkene göre kurallar</span><span class="en">Rules for your country</span></h3>
+                    <p><span class="tr">Her maddenin AB, Türkiye, İngiltere, ABD, Japonya ve Kore'deki yasal durumu; senin ülken en üstte.</span><span class="en">Each additive's legal status in the EU, Türkiye, UK, US, Japan and Korea, with your country first.</span></p>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">💾</div>
-                    <h3>Offline Kullanım</h3>
-                    <p>Kapsamlı veritabanı sayesinde internet bağlantısı olmadan da ürünleri analiz edebilirsiniz.</p>
+                <div class="card">
+                    <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5.5 9c1 2 3 3.5 5 4M13 20l4-9 4 9M14.5 17h5"/></svg></div>
+                    <h3><span class="tr">21 dilde etiket okur</span><span class="en">Reads labels in 21 languages</span></h3>
+                    <p><span class="tr">Zutaten, Ingrédients, 原材料, 성분… Yurt dışında aldığın ürünü de okutabilirsin.</span><span class="en">Zutaten, Ingrédients, 原材料, 성분… It works on products you buy abroad, too.</span></p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="how-it-works">
-        <div class="container">
-            <h2 class="section-title">Nasıl Çalışır?</h2>
+    <!-- Ekran görüntüleri -->
+    <section>
+        <div class="wrap">
+            <div class="section-head">
+                <h2><span class="tr">Sade, okunaklı, hızlı</span><span class="en">Clean, clear, fast</span></h2>
+                <p><span class="tr">Kararı tek bakışta gör, ayrıntısına bir dokunuşla in.</span><span class="en">See the verdict at a glance, dig into details with a tap.</span></p>
+            </div>
+            <div class="shots tr">
+                <img src="/assets/tr-04.jpg" alt="Barkod tarama" loading="lazy">
+                <img src="/assets/tr-03.jpg" alt="Etiket tarama" loading="lazy">
+                <img src="/assets/tr-05.jpg" alt="Profil" loading="lazy">
+                <img src="/assets/tr-01.jpg" alt="Ana ekran" loading="lazy">
+            </div>
+            <div class="shots en">
+                <img src="/assets/en-04.jpg" alt="Barcode scanning" loading="lazy">
+                <img src="/assets/en-03.jpg" alt="Label scanning" loading="lazy">
+                <img src="/assets/en-05.jpg" alt="Profile" loading="lazy">
+                <img src="/assets/en-01.jpg" alt="Home screen" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Nasıl çalışır -->
+    <section>
+        <div class="wrap">
+            <div class="section-head">
+                <h2><span class="tr">Üç adımda karar</span><span class="en">A verdict in three steps</span></h2>
+            </div>
             <div class="steps">
                 <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Fotoğrafı Çek</h3>
-                    <p>Ürünün içindekiler listesinin fotoğrafını çekin</p>
+                    <h3><span class="tr">Okut</span><span class="en">Scan</span></h3>
+                    <p><span class="tr">İçindekiler listesini ya da barkodu kameraya göster.</span><span class="en">Point your camera at the ingredients list or barcode.</span></p>
                 </div>
                 <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Analiz Et</h3>
-                    <p>Uygulama içerikleri otomatik olarak tanıyıp analiz eder</p>
+                    <h3><span class="tr">Gör</span><span class="en">See</span></h3>
+                    <p><span class="tr">Katkı maddeleri, alerjenler ve risk dağılımı anında listelenir.</span><span class="en">Additives, allergens and the risk breakdown appear instantly.</span></p>
                 </div>
                 <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Sonuçları Gör</h3>
-                    <p>Zararlı maddeleri ve detaylı açıklamaları görüntüleyin</p>
+                    <h3><span class="tr">Karar ver</span><span class="en">Decide</span></h3>
+                    <p><span class="tr">Profiline göre notunu ve kişisel uyarılarını incele.</span><span class="en">Check your grade and personal alerts based on your profile.</span></p>
+                </div>
+            </div>
+            <div class="verdicts">
+                <span class="pill p-good"><span class="tr">Size uygun</span><span class="en">Good for you</span><b>A</b></span>
+                <span class="pill p-caution"><span class="tr">Dikkat</span><span class="en">Caution</span><b>C</b></span>
+                <span class="pill p-avoid"><span class="tr">Kaçının</span><span class="en">Avoid</span><b>E</b></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gizlilik -->
+    <section>
+        <div class="wrap">
+            <div class="privacy">
+                <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                <div>
+                    <h2><span class="tr">Verilerin telefonunda kalır</span><span class="en">Your data stays on your phone</span></h2>
+                    <p>
+                        <span class="tr">Hesap yok. Metin tanıma cihazında yapılır, fotoğraf kaydedilmez. Adın, sağlık profilin, kaçınma listen ve geçmişin hiçbir sunucuya gönderilmez. <a href="/privacy">Gizlilik Politikası</a></span>
+                        <span class="en">No account. Text recognition runs on your device and no photos are saved. Your name, health profile, avoid list and history are never sent to any server. <a href="/privacy#en">Privacy Policy</a></span>
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="cta">
-        <div class="container">
-            <h2>Sağlıklı Yaşamaya Bugün Başla</h2>
-            <p style="font-size: 1.2em; margin-bottom: 30px;">What's Inside ile ne yediğinizi bilin, bilinçli seçimler yapın</p>
-            <a href="#" class="download-btn">App Store'dan İndir</a>
+    <!-- Son çağrı -->
+    <section class="final">
+        <div class="wrap">
+            <img src="/assets/app-icon.png" alt="">
+            <h2><span class="tr">Ne yediğini bil.</span><span class="en">Know what you eat.</span></h2>
+            <p><span class="tr">What's Inside? ücretsiz ve 21 dilde.</span><span class="en">What's Inside? is free and available in 21 languages.</span></p>
+            <a class="store-btn" href="https://apps.apple.com/app/id6753644152">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.77-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.37-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.09 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg>
+                <span><small class="tr">App Store'dan</small><small class="en">Download on the</small><span class="tr">İndir</span><span class="en">App Store</span></span>
+            </a>
         </div>
     </section>
+</main>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 What's Inside. Tüm hakları saklıdır.</p>
-            <p style="margin-top: 10px;">
-                <a href="https://github.com/yourusername/whats-inside">GitHub</a> | 
-                <a href="mailto:support@example.com">İletişim</a>
-            </p>
-        </div>
-    </footer>
+<footer>
+    <div class="wrap">
+        <span>© 2026 What's Inside?</span>
+        <nav>
+            <a href="/privacy"><span class="tr">Gizlilik Politikası</span><span class="en">Privacy Policy</span></a>
+            <a href="mailto:legendaryteam.dev@gmail.com"><span class="tr">İletişim</span><span class="en">Contact</span></a>
+        </nav>
+        <p class="disclaimer">
+            <span class="tr">What's Inside? bilgilendirme amaçlıdır ve tıbbi tavsiye yerine geçmez. Barkod bilgileri Open Food Facts'ten (ODbL) alınır.</span>
+            <span class="en">What's Inside? is for information only and is not medical advice. Barcode data comes from Open Food Facts (ODbL).</span>
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Dil: önce kullanıcının seçimi, yoksa tarayıcı dili (Türkçe değilse İngilizce)
+    (function () {
+        var saved = null;
+        try { saved = localStorage.getItem('lang'); } catch (e) {}
+        var lang = saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en');
+        function apply(l) {
+            document.body.setAttribute('data-lang', l);
+            document.documentElement.lang = l;
+            document.querySelectorAll('.lang button').forEach(function (b) { b.classList.toggle('on', b.dataset.set === l); });
+        }
+        apply(lang);
+        document.querySelectorAll('.lang button').forEach(function (b) {
+            b.addEventListener('click', function () {
+                apply(b.dataset.set);
+                try { localStorage.setItem('lang', b.dataset.set); } catch (e) {}
+            });
+        });
+    })();
+</script>
 </body>
 </html>
